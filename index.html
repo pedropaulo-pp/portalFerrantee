@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicadores Operacionais</title>
+    <style>
+        :root {
+            --primary-color: #084879;
+            --secondary-color: #4da9f5; /* Ajusta a cor do >>> degradê da barra de titulo */
+            --tab-active: #f2fff2; /* Ajusta a cor de seleção que mudam os setores dos Power Bi's */
+            --tab-inactive: #e0e0e0;   /* Ajusta a cor dos botões que mudam os setores dos Power Bi's */
+        }
+
+        @media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #0657c2; /* Ajusta a cor do <<< degradê da barra de titulo */
+        --background: #0e0909;
+    }
+        } 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;  /* Ajusta o texto dos botões que mudam os setores dos Power Bi's */
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 25px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgb(69, 143, 255); /* Ajusta a cor de sombreamento da faixa do Subtitulo oficial */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .logo-container {
+            position: absolute;
+            left: 20px;
+            top: 50%;  /* Ajusta o tamanho da logo*/
+            transform: translateY(-50%);
+        }
+                    
+        .company-logo {
+            height: 100px; /* Ajuste conforme necessário */
+            max-width: 180px; /* Limite a largura máxima */
+            object-fit: contain;
+        }
+        
+        .header-text {
+            flex: 1;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* Controles de abas */
+        .tabs {
+            display: flex;
+            background: rgb(255, 255, 255);
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgb(11, 146, 236);  /* Coloca cor de sombreamento dos botões que muda os Power Bi's */
+        }
+        
+        /* Ajusta a altura dos botões de navegação do Power Bi */
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--tab-inactive);
+            transition: all 0.3s;
+            font-weight: 500;
+            border-right: 1px solid #ddd;
+        }
+        
+        .tab:last-child {
+            border-right: none;
+        }
+        
+        .tab:hover {
+            background: #f7f8e8;
+        }
+        
+        .tab.active {
+            background: var(--tab-active);
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        /* Conteúdo das abas */
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 5px 15px rgb(248, 248, 248);
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Controles de relatório */
+        
+        .report-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .control-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+        
+        /* Container do Power BI */
+        .powerbi-container {
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: height 0.3s;
+        }
+        
+        .powerbi-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Tamanhos pré-definidos */
+        .size-small { height: 400px; }
+        .size-medium { height: 60vh; }
+        .size-large { height: 80vh; }
+        .size-full { height: 90vh; }
+        
+        footer {
+
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: rgb(247, 247, 247);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        /* Responsividade */
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                text-align: center;
+            }
+            
+            .logo-container {
+                position: static;
+                transform: none;
+                margin-bottom: 10px;
+            }
+            
+            .header-text {
+                padding: 0;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-right: none;
+                border-bottom: 1px solid #ffffff;
+            }
+            
+            .powerbi-container {
+                height: 50vh;
+            }
+            
+            .size-medium { height: 50vh; }
+            .size-large { height: 65vh; }
+        }
+        
+        /*Inicio do código para a inserção do video de fundo */
+        
+
+          <!DOCTYPE html>
+         <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Site com Vídeo de Fundo</title>
+         <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 40vh; /* Altura total da tela */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgb(255, 255, 255); /* Altera a cor das letras do Subtitulo principal*/
+            text-align: center;
+        }
+        
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Garante que o vídeo cubra todo o espaço */
+            z-index: -1;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #e2e1e1;  /* --- Mudar a cor do titulo principal --- */
+            margin-bottom: 10px;  /* --- Altera a altura do faixa azul do subtitulo principal --- */
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgb(90, 147, 221); /* Colocar cor de fundo no titulo principal*/
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 3px rgb(126, 201, 219); /* Colocar cor de fundo no Subtitulo principal*/
+            animation: fadeIn 2s ease-out;
+        }
+        
+        .hero-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: rgb(240, 237, 237);
+            color: white;
+            border: 2px solid rgb(255, 255, 255);
+            border-radius: 50px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            animation: fadeIn 2.5s ease-out;
+        }
+        
+        .hero-button:hover {
+            background: white;
+            color: #181717;
+        }
+        
+        /* Overlay escuro para melhor contraste */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: -1;
+        }
+        
+        /* Animação */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .hero-subtitle { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+        <!-- Vídeo de fundo -->
+        <video autoplay muted loop class="video-background">
+            <source src="Video_laboratório.mp4" type="video/mp4">
+        </video>
+        
+        <!-- Overlay para melhor legibilidade -->
+        <div class="overlay"></div>
+        
+        
+        <!-- Titulo principal do Site -->
+         
+        <div class="hero-content">
+            <h1 class="hero-title">DEPARTAMENTO OPERAÇÕES TÉCNICAS</h1>
+            <p class="hero-subtitle">Acompanhe informações do setor como indicadores, manuais de instalação, e outras informações...</p>
+        </div>
+    </section>
+    
+    <script>
+        // Opcional: Pausar vídeo em mobile para economizar dados
+        if (window.innerWidth < 768) {document.querySelector('.video-background').pause();
+        }
+    </script>
+</body>
+</html>
+
+    </style>
+</head>
+<body>
+    
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                
+                <!-- Substitua pelo caminho da sua logo -->
+                <img src="Logo_grupo_ferrante_branca.png" alt="Logo da Empresa" class="company-logo">
+            </div>
+            
+            <div class="header-text">
+                <h1>Indicadores Operacionais GF</h1>  
+            </div>
+
+               <!-- Inicio do código dos botões de navegação do site -->
+
+            <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aba de Navegação</title>
+    <style>
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .site-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.35);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- ABA DE TÍTULO COM BOTÕES -->
+
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn active">Início</a>
+                <a href="sobre.html" class="nav-btn">Sobre</a>
+                <a href="servicos.html" class="nav-btn">Serviços</a>
+                <a href="contato.html" class="nav-btn">Contato</a>
+            </div>
+        </div>
+    </header>
+</body>
+</html>
+        </div>
+    </header>
+    <div class="container">
+
+        <!-- Inicio do código dos botões de navegação do site -->
+
+
+        <!-- Abas de navegação -->
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'report1')">Técnica</div>
+            <div class="tab" onclick="openTab(event, 'report2')">Montagem - Fabrica</div>
+            <div class="tab" onclick="openTab(event, 'report3')">Laboratório</div>
+            <div class="tab" onclick="openTab(event, 'report4')">Visão Gerencial</div>
+        </div>
+        
+        <!-- Conteúdo da Aba 1 - TÉCNICAS -->
+        <div id="report1" class="tab-content active">
+            <h2>Indicadores Área Técnica</h2>
+            <p>Acompanhe os dados do setor técnico em tempo real</p>
+            
+            <div class="report-controls">
+                <button class="control-btn" onclick="resizeReport('report1', 'large')">Grande</button>
+                <button class="control-btn" onclick="resizeReport('report1', 'full')">Expandir</button>
+                <button class="control-btn" onclick="toggleFullscreen('iframe1')">Tela Cheia</button>
+            </div>
+            
+            <div class="powerbi-container size-medium" id="container1">
+                <iframe id="iframe1" class="powerbi-iframe" 
+                    title="TÉCNICA"
+                    src="https://app.powerbi.com/reportEmbed?reportId=283bd473-b01f-4b6f-9c40-724ffc868add&autoAuth=true&ctid=f7b6c427-44c1-41b2-b162-a34e1dc31fa1" 
+                    frameborder="0" 
+                    allowFullScreen="true">
+                </iframe>
+            </div>
+        </div>
+        <!-- Conteúdo da Aba 2 - CIVIL - OBRAS -->
+        <div id="report2" class="tab-content">
+            <h2>Indicadores Monatgem/Fabrica</h2>
+            <p>Acompanhe o andamento operacional, e de produção da fabrica</p>
+            
+            <div class="report-controls">
+                <button class="control-btn" onclick="resizeReport('report2', 'large')">Grande</button>
+                <button class="control-btn" onclick="resizeReport('report2', 'full')">Expandir</button>
+                <button class="control-btn" onclick="toggleFullscreen('iframe2')">Tela Cheia</button>
+            </div>
+            
+            <div class="powerbi-container size-medium" id="container2">
+                <iframe id="iframe2" class="powerbi-iframe" 
+                    title="CIVIL - OBRAS"
+                    src="https://app.powerbi.com/reportEmbed?reportId=5d59b999-32f1-4662-b82a-ab466ae3706a&autoAuth=true&ctid=f7b6c427-44c1-41b2-b162-a34e1dc31fa1" 
+                    frameborder="0" 
+                    allowFullScreen="true">
+                </iframe>
+            </div>
+        </div>  
+        <!-- Conteúdo da Aba 3 - LABORATÓRIO -->
+        <div id="report3" class="tab-content">
+            <h2>Indicadores Laboratório</h2>
+            <p>Acomapanhe os detalhes de toda a operação, e resultados financeiros</p>
+            
+            <div class="report-controls">
+                <button class="control-btn" onclick="resizeReport('report3', 'large')">Grande</button>
+                <button class="control-btn" onclick="resizeReport('report3', 'full')">Expandir</button>
+                <button class="control-btn" onclick="toggleFullscreen('iframe3')">Tela Cheia</button>
+            </div>
+            
+            <div class="powerbi-container size-medium" id="container3">
+                <iframe id="iframe3" class="powerbi-iframe" 
+                    title="LABORATÓRIO"
+                    src="https://app.powerbi.com/reportEmbed?reportId=9eb7d34a-b77f-4461-9427-ce6f4e015882&autoAuth=true&ctid=f7b6c427-44c1-41b2-b162-a34e1dc31fa1" 
+                    frameborder="0" 
+                    allowFullScreen="true">
+                </iframe>
+            </div>
+        </div>
+        
+        <!-- Conteúdo da Aba 4 - VISÃO GERÊNCIAL -->
+
+        <div id="report4" class="tab-content">
+            <h2>Visão Gerencial - Técnica</h2>
+            <p>Acompanhamento de prazos e marcos de cada projeto</p>
+            
+            <div class="report-controls">
+                <button class="control-btn" onclick="resizeReport('report4', 'large')">Grande</button>
+                <button class="control-btn" onclick="resizeReport('report4', 'full')">Expandir</button>
+                <button class="control-btn" onclick="toggleFullscreen('iframe4')">Tela Cheia</button>
+            </div>
+            
+            <div class="powerbi-container size-medium" id="container4">
+                <iframe id="iframe4" class="powerbi-iframe" 
+                    title="Visão Gerêncial"
+                    src="https://app.powerbi.com/reportEmbed?reportId=b521d6e7-2694-4d28-b322-46a79fb93f7c&autoAuth=true&ctid=f7b6c427-44c1-41b2-b162-a34e1dc31fa1" 
+                    frameborder="0" 
+                    allowFullScreen="true">
+                </iframe>
+            </div>
+        </div>
+    </div>
+    
+
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            
+            /* Inicio do código para a criação do botão do WhatsApp */
+            .whatsapp-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                background-color: #25D366;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                z-index: 9999;
+                transition: all 0.3s ease;
+                animation: pulse 2s infinite;
+            }
+            
+            .whatsapp-button:hover {
+                background-color: #128C7E;
+                transform: scale(1.1);
+            }
+            
+            .whatsapp-button img {
+                width: 36px;
+                height: 36px;
+            }
+            
+            /* Animação de pulsar */
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+                }
+                70% {
+                    box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+                }
+            }
+        </style>
+    </head>
+    <body>      
+        <a href="https://wa.me/5517996105732?text=Olá,%20gostaria%20de%20mais%20informações" class="whatsapp-button" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+        </a>
+    </body>
+    </html>
+
+    <!-- Fim do código de WhatsApp -->
+     
+
+    <!-- codigo em Java Script para a a inserção dos manuias de instalação em PFD-->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuais de Instalação</title>
+    <style>
+        /* --- ESTILOS GERAIS --- */
+        .manuais-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+        }
+  
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #ddd; /* Coloca cor na caixa na barra de pesquisa dos manuais*/
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgb(4, 109, 196); /* Coloca cor de sombreamento na barra de pesquisa dos manuais*/
+        }
+
+        /* --- CARDS DE MANUAIS --- */
+
+        .manuais-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        .manual-card {
+            background: white; /* Altera a cor das caixas de vizualização*/
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgb(170, 167, 167); /* Coloca sombreamento fixo em torno dos icones*/
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .manual-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(25, 209, 255, 0.986); /* Coloca sombreamento ao passar o mouse pelo relatório desejado*/
+        }
+        
+        .manual-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+        .manual-info {
+            padding: 15px;
+        }
+        .manual-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #141114;  /* Altera a cor do das descrições dos relatórios*/
+        }
+        .manual-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .btn-view {
+            background: #3498db;
+            color: white;
+        }
+        .btn-view:hover {
+            background: #2980b9; /* Altera a cor do botão (Vizualizar) dos relatórios*/
+        }
+        .btn-download {
+            background: #2ecc71; /* Altera a cor do botão (Baixar) dos relatórios*/
+            color: white;
+        }
+        .btn-download:hover {
+            background: #57af7c;
+        }
+
+        /* --- RESPONSIVO, aumenta o tamanho do quadrado do icone dos manuais--- */
+        @media (max-width: 1500px) {
+    .manual-image {
+        max-height: 2000px;  /* Tamanho menor em celulares */
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="manuais-container">
+        <h1>📚 Manuais de Instalação</h1>
+        
+        <!-- Barra de Pesquisa -->
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar manual...">
+        
+        <!-- Grid de Cards -->
+        <div class="manuais-grid" id="manualsGrid"></div>
+    </div>
+
+    <script>
+
+        // Lista de manuais (SUBSTITUA com seus arquivos e imagens!)
+
+        const manuals = [
+            {
+                title: "Manual Inst. Rádio - Caminhão Arocs",
+                pdf: "MANUAL_DE_INSTALAÇÃO_AROCS.pdf",
+                image: "arocs.jpg"
+            },
+            {
+                title: "Manual Inst. Rádio - S-10 C. Simples",
+                pdf: "MANUAL_DE_INSTALAÇÃO_DE_RÁDIO_CHEVROLET_S_10_C_SIMPLES.pdf",
+                image: "S_10.png"
+            },
+            {
+                title: "Manual - Kit RAV - O",
+                pdf: "MANUAL_DE_INSTALAÇÃO_KIT_RAV_O_(SPIN).pdf",
+                image: "RAV_O.png"
+            },
+            {
+                title: "Manual Inst. Rádio - Polo",
+                pdf: "MANUAL_DE_INSTALAÇÃO_POLO.pdf",
+                image: "POLO.png"
+            },
+            {
+                title: "Manual Inst. Rádio - Saveiro",
+                pdf: "MANUAL_DE_INSTALAÇÃO_SAVEIRO.pdf",
+                image: "SAVEIRO.png"
+            },
+            {
+                title: "Manual  Inst. Rádio - SPIN",
+                pdf: "MANUAL_DE_INSTALAÇÃO_SPIN.pdf",
+                image: "SPIN.png"
+            },
+            {
+                title: "Manual  Inst. Starlink - Eldorado",
+                pdf: "MANUAL_DE_INSTALAÇÃO_STARLINK _ELDORADO.pdf",
+                image: "STARLINK_ELDORADO.png"
+            },
+            {
+                title: "Manual  Inst. Starlink - Ranger",
+                pdf: "MANUAL_DE_INSTALAÇÃO_STARLINK_RANGER.pdf",
+                image: "STARLINK_RANGER.png"
+            },
+            {
+                title: "Manual  Inst. Rádio - Trator Case Magnum",
+                pdf: "MANUAL_DE _NSTALAÇÃO_DE_RÁDIO_TRATOR_CASE_MAGNUM.pdf",
+                image: "TRATOR_CASE_MAGNUM.png"
+            },
+            {
+                title: "Manual  Inst. Rádio - Trator Fendt",
+                pdf: "MANUAL_INSTALAÇÃO_RÁDIO_RATOR_FENDT.pdf",
+                image: "TRATOR_FENDT.png"
+            },
+            {
+                title: "Manual  Inst. Starlink - Picape Montana",
+                pdf: "PICAPE_MONTANA.pdf",
+                image: "PICAPE_MONTANA.png"
+            },
+            {
+                title: "Manual  Inst. Starlink - Fiat Argo",
+                pdf: "MANUAL_DE_INSTALAÇÃO_STARLINK_FIAT_ARGO.pdf",
+                image: "Fiat_Argo.png"
+            },
+            
+            
+            // Formato: { title: "Nome", pdf: "arquivo.pdf", image: "capa.jpg" }
+        ];
+
+        // Função para exibir os cards
+        function displayManuals(manualsToShow = manuals) {
+            const grid = document.getElementById('manualsGrid');
+            grid.innerHTML = manualsToShow.map(manual => `
+                <div class="manual-card">
+                    <img src="${manual.image}" alt="${manual.title}" class="manual-image">
+                    <div class="manual-info">
+                        <div class="manual-title">${manual.title}</div>
+                        <div class="manual-actions">
+                            <a href="${manual.pdf}" target="_blank" class="action-btn btn-view">Visualizar</a>
+                            <a href="${manual.pdf}" download class="action-btn btn-download">Baixar</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Função de pesquisa
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = manuals.filter(manual => 
+                manual.title.toLowerCase().includes(term)
+            );
+            displayManuals(filtered);
+        });
+
+        // Carrega os manuais ao abrir a página
+        window.onload = displayManuals;
+    </script>
+</body>
+</html>>
+
+<!-- Final do codigo em Java Script dos manuais em PDF-->
+ 
+
+<!--  CÓDIGO DA CAIXA DE MENSAGEM  -->
+
+    </div>
+    <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Site</title>
+    <style>
+        /* Estilo do botão/flutuante do chat */
+        .chatbot-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6e48aa, #9d50bb);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .chatbot-trigger:hover {
+            transform: scale(1.1);
+        }
+
+        .chatbot-trigger img {
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Estilo da janela do chat */
+        .chatbot-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #00aeff, #00438f);
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chatbot-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .chatbot-body {
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .chatbot-message {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .chatbot-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botão do Chat -->
+    <button class="chatbot-trigger" onclick="toggleChat()">
+        <img src="https://img.freepik.com/free-vector/hand-drawn-cartoon-gym-logo_23-2149688050.jpg" alt="Superte">
+    </button>
+
+    <!-- Janela do Chat -->
+    <div class="chatbot-window" id="chatbotWindow">
+        <button class="chatbot-close" onclick="toggleChat()">×</button>
+        <div class="chatbot-header">
+            <img src="c:\Users\pgsilva\Pictures\imagem Pedro.png" alt="Superte">
+            <h3>Suporte</h3>
+        </div>
+        <div class="chatbot-body">
+            <div class="chatbot-message">
+                Olá! Seja bem-vindo(a) ao site Técnico!<br>
+                Eu sou o Suporte, seu assistente virtual.<br>
+                Como posso te ajudar hoje?<br>
+                Acesse o whatsApp abaixo... ⬇️
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para abrir/fechar o chat
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatbotWindow');
+            if (chatWindow.style.display === 'flex') {
+                chatWindow.style.display = 'none';
+            } else {
+                chatWindow.style.display = 'flex';
+            }
+        }
+
+        // Mostrar o chat automaticamente ao carregar a página (opcional)
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('chatbotWindow').style.display = 'flex';
+            }, 1000); // Aparece após 1 segundos
+        };
+    </script>
+</body>
+</html>
+
+<!--  FIM DO CÓDIGO DA CAIXA DE MENSAGEM  -->
+
+<!--  INICIO DO CARROSSEL QUE PASSA AUTOMATICAMENTE  -->
+
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrossel Automático</title>
+    <style>
+        /* ESTILOS DO CARROSSEL */
+        .carrossel {
+            width: 1500px;
+            height: 300px;
+            margin: 50px auto;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        .carrossel-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+        }
+        
+        .carrossel-item {
+            min-width: 100%;
+            position: relative;
+        }
+        
+        .carrossel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .carrossel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .carrossel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        
+        .carrossel-nav button {
+            background: rgba(31, 143, 235, 0.705);  /* Muda a cor dos botões que passam a imagem do carrosel */
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .carrossel-nav button:hover {
+            background: rgba(255,255,255,0.8);
+        }
+        
+        .carrossel-indicadores {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        .indicador {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .indicador.ativo {
+            background: white;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="carrossel">
+        <div class="carrossel-container">
+            <!-- Item 1 -->
+            <div class="carrossel-item">
+                <img src="POLO.png" alt="Imagem 1">
+                <div class="carrossel-caption">Descrição da Imagem 1</div>
+            </div>
+            
+            <!-- Item 2 -->
+            <div class="carrossel-item">
+                <img src="arocs.jpg" alt="Imagem 2">
+                <div class="carrossel-caption">Descrição da Imagem 2</div>
+            </div>
+            
+            <!-- Item 3 -->
+            <div class="carrossel-item">
+                <img src="TRATOR_FENDT.png" alt="Imagem 3">
+                <div class="carrossel-caption">Descrição da Imagem 3</div>
+            </div>
+        </div>
+        
+        <!-- Navegação -->
+        <div class="carrossel-nav">
+            <button class="carrossel-prev">❮</button>
+            <button class="carrossel-next">❯</button>
+        </div>
+        
+        <!-- Indicadores -->
+        <div class="carrossel-indicadores">
+            <div class="indicador ativo"></div>
+            <div class="indicador"></div>
+            <div class="indicador"></div>
+        </div>
+        
+    <script>
+        // Configurações
+        const carrossel = document.querySelector('.carrossel-container');
+        const items = document.querySelectorAll('.carrossel-item');
+        const prevBtn = document.querySelector('.carrossel-prev');
+        const nextBtn = document.querySelector('.carrossel-next');
+        const indicadores = document.querySelectorAll('.indicador');
+        let currentIndex = 0;
+        let intervalo;
+        const tempoTransicao = 3000; // 3 segundos
+        
+        // Função para mover o carrossel
+        function moverCarrossel(index) {
+            // Atualiza índice
+            currentIndex = index;
+            
+            // Move o container
+            carrossel.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            // Atualiza indicadores
+            indicadores.forEach((indicador, i) => {
+                indicador.classList.toggle('ativo', i === currentIndex);
+            });
+        }
+        
+        // Avança para o próximo item
+        function proximoItem() {
+            currentIndex = (currentIndex + 1) % items.length;
+            moverCarrossel(currentIndex);
+        }
+        
+        // Eventos dos botões
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+            moverCarrossel(currentIndex);
+            resetIntervalo();
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            proximoItem();
+            resetIntervalo();
+        });
+        
+        // Eventos dos indicadores
+        indicadores.forEach((indicador, index) => {
+            indicador.addEventListener('click', () => {
+                moverCarrossel(index);
+                resetIntervalo();
+            });
+        });
+        
+        // Auto-play
+        function iniciarAutoPlay() {
+            intervalo = setInterval(proximoItem, tempoTransicao);
+        }
+        
+        function resetIntervalo() {
+            clearInterval(intervalo);
+            iniciarAutoPlay();
+        }
+        
+        // Pausa quando o mouse está sobre o carrossel
+        document.querySelector('.carrossel').addEventListener('mouseenter', () => {
+            clearInterval(intervalo);
+        });
+        
+        document.querySelector('.carrossel').addEventListener('mouseleave', iniciarAutoPlay);
+        
+        // Inicia
+        iniciarAutoPlay();
+    </script>
+</body>
+</html>
+<li><a href="servicos.html">Serviços</a></li>
+
+<!--  FIM DO CODIGO DO CAROSSEL QUE PASSA AUTOMATICAMENTE  -->
+
+    <footer>
+        <p>&copy; <span id="year"></span> Relatórios e Indicadores operacionais do grupo</p>
+    </footer>
+
+
+    <script>
+        // Atualizar ano no footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Alternar entre abas
+        function openTab(evt, tabName) {
+            // Esconder todos os conteúdos de abas
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Remover classe 'active' de todas as abas
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Mostrar a aba atual e adicionar classe 'active'
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+        
+        // Redimensionar relatório
+        function resizeReport(reportId, size) {
+            const container = document.getElementById('container' + reportId.slice(-1));
+            
+            // Remove todas as classes de tamanho
+            container.classList.remove('size-small', 'size-medium', 'size-large', 'size-full');
+            
+            // Adiciona a classe selecionada
+            container.classList.add('size-' + size);
+        }
+        
+        // Tela cheia para o iframe específico
+        function toggleFullscreen(iframeId) {
+            const iframe = document.getElementById(iframeId);
+            
+            if (!document.fullscreenElement) {
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                    iframe.webkitRequestFullscreen();
+                } else if (iframe.msRequestFullscreen) {
+                    iframe.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
