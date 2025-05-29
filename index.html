@@ -451,6 +451,7 @@
             <div class="tab" onclick="openTab(event, 'report2')">Montagem - Fabrica</div>
             <div class="tab" onclick="openTab(event, 'report3')">Laboratório</div>
             <div class="tab" onclick="openTab(event, 'report4')">Visão Gerencial</div>
+            <div class="tab" onclick="openTab(event, 'report5')">Agenda - Técnica </div>
         </div>
         
         <!-- Conteúdo da Aba 1 - TÉCNICAS -->
@@ -536,7 +537,28 @@
             </div>
         </div>
     </div>
-    
+
+     <!-- Conteúdo da Aba 5 - AGENDA TÉNCICA -->
+
+    <div id="report5" class="tab-content">
+            <h2>Agenda Técnica</h2>
+            <p>Acomapanhe os detalhes de toda a operação, cronograma e banco de horas dos colaboradores</p>
+            
+            <div class="report-controls">
+                <button class="control-btn" onclick="resizeReport('report3', 'large')">Grande</button>
+                <button class="control-btn" onclick="resizeReport('report3', 'full')">Expandir</button>
+                <button class="control-btn" onclick="toggleFullscreen('iframe3')">Tela Cheia</button>
+            </div>
+            
+            <div class="powerbi-container size-medium" id="container3">
+                <iframe id="iframe3" class="powerbi-iframe" 
+                    title="LABORATÓRIO"
+                    src="https://app.powerbi.com/reportEmbed?reportId=5e329f55-6c8d-4ee4-846f-35f97e9c628f&autoAuth=true&ctid=f7b6c427-44c1-41b2-b162-a34e1dc31fa1"
+                    frameborder="0" 
+                    allowFullScreen="true">
+                </iframe>
+            </div>
+        </div>
 
     <!DOCTYPE html>
     <html lang="pt-br">
@@ -926,7 +948,7 @@
     <div class="chatbot-window" id="chatbotWindow">
         <button class="chatbot-close" onclick="toggleChat()">×</button>
         <div class="chatbot-header">
-            <img src="imagem_pedro.png" alt="Superte">
+            <img src="ferrantinho.png" alt="Superte">
             <h3>Suporte</h3>
         </div>
         <div class="chatbot-body">
