@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicadores Operacionais</title>
+    <style>
+        :root {
+            --primary-color: #084879;
+            --secondary-color: #4da9f5;
+            --tab-active: #f2fff2;
+            --tab-inactive: #e0e0e0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #0657c2;
+                --background: #0e0909;
+            }
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        /* Menu Hambúrguer */
+        .hamburger-menu {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 1001;
+            display: none;
+            padding: 10px;
+        }
+
+        .hamburger-menu .bar {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+            transition: 0.4s;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            background-color: var(--primary-color);
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar a:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            cursor: pointer;
+        }
+
+        /* Overlay para quando o menu estiver aberto */
+        .overlay {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 25px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgb(69, 143, 255);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Nova barra de navegação superior */
+        .top-nav {
+            position: fixed;
+            top: -90px; /* Ajustado para dar mais espaço e garantir que esteja escondido */
+            left: 0;
+            width: 100%;
+            background: rgba(8, 72, 121, 0.9);
+            padding: 15px 0;
+            z-index: 998;
+            transition: all 0.3s ease; /* Transição suave */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        /* Removido .top-nav:hover { top: 0; } para evitar conflito com JS */
+        
+        .top-nav .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .top-nav .nav-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .top-nav .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .top-nav .nav-btn.active {
+            background: rgba(255, 255, 255, 0.35);
+            font-weight: bold;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .logo-container {
+            position: absolute;
+            left: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+                                    
+        .company-logo {
+            height: 100px;
+            max-width: 180px;
+            object-fit: contain;
+        }
+        
+        .header-text {
+            flex: 1;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        /* Nav Buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.35);
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* Controles de abas */
+        .tabs {
+            display: flex;
+            background: rgb(255, 255, 255);
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgb(11, 146, 236);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--tab-inactive);
+            transition: all 0.3s;
+            font-weight: 500;
+            border-right: 1px solid #ddd;
+        }
+        
+        .tab:last-child {
+            border-right: none;
+        }
+        
+        .tab:hover {
+            background: #f7f8e8;
+        }
+        
+        .tab.active {
+            background: var(--tab-active);
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        /* Conteúdo das abas */
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 5px 15px rgb(248, 248, 248);
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Controles de relatório */
+        .report-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .control-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+        
+        /* Container do Power BI */
+        .powerbi-container {
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: height 0.3s;
+        }
+        
+        .powerbi-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Tamanhos pré-definidos */
+        .size-small { height: 400px; }
+        .size-medium { height: 60vh; }
+        .size-large { height: 80vh; }
+        .size-full { height: 90vh; }
+        
+        footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: rgb(247, 247, 247);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                text-align: center;
+            }
+            
+            .hamburger-menu {
+                display: block;
+            }
+            
+            .nav-buttons {
+                display: none;
+            }
+            
+            .logo-container {
+                position: static;
+                transform: none;
+                margin-bottom: 10px;
+                left: auto;
+            }
+            
+            .header-text {
+                padding: 0;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-right: none;
+                border-bottom: 1px solid #ffffff;
+            }
+            
+            .powerbi-container {
+                height: 50vh;
+            }
+            
+            .size-medium { height: 50vh; }
+            .size-large { height: 65vh; }
+            
+            .top-nav {
+                display: none; /* Esconde a barra superior em telas pequenas, já que o hambúrguer faz essa função */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Nova barra de navegação superior -->
+    <div class="top-nav">
+        <div class="nav-buttons">
+            <a href="w:\01-ESCALA DE SERVIÇOS\Desenvolvimento - DS\index.html" class="nav-btn active">Técnica</a>
+            <a href="w:\01-ESCALA DE SERVIÇOS\Desenvolvimento - DS\Camadas_site\index.html" class="nav-btn">Supplay</a>
+            <a href="servicos.html" class="nav-btn">Serviços</a>
+            <a href="contato.html" class="nav-btn">Contato</a>
+            <a href="#" onclick="openTab('powerapp1')" class="nav-btn">Agendamento</a>
+            <a href="#" onclick="openTab('powerapp2')" class="nav-btn">Chamados</a>
+        </div>
+    </div>
+
+    <!-- Menu Hambúrguer e Sidebar -->
+    <div class="hamburger-menu" onclick="toggleSidebar()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    
+    <div class="sidebar" id="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">&times;</a>
+        <a href="w:\01-ESCALA DE SERVIÇOS\Desenvolvimento - DS\index.html" class="active">Técnica</a>
+        <a href="w:\01-ESCALA DE SERVIÇOS\Desenvolvimento - DS\Camadas_site\index.html">Supplay</a>
+        <a href="servicos.html">Serviços</a>
+        <a href="contato.html">Contato</a>
+        <a href="#" onclick="openTab('powerapp1'); toggleSidebar()">Agendamento de Salas</a>
+        <a href="#" onclick="openTab('powerapp2'); toggleSidebar()">Abrir Chamados</a>
+    </div>
+    
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="Logo_ferrante_branca .png" alt="Logo GF" class="company-logo">
+            </div>
+            
+            <div class="header-text">
+                <h1>Indicadores Operacionais GF</h1>
+                <div class="nav-buttons">
+                    <a href="w:\01-ESCALA DE SERVIÇOS\Desenvolvimento - DS\index.html" class="nav-btn active">Técnica</a>
+                    <a href="w:\01-ESCALA DE SERVIÇOS\Desenvolvimento - DS\Camadas_site\index.html" class="nav-btn">Supplay</a>
+                    <a href="servicos.html" class="nav-btn">Serviços</a>
+                    <a href="contato.html" class="nav-btn">Contato</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Abas de navegação -->
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('powerapp1')">Agendamento de Salas</div>
+            <div class="tab" onclick="openTab('powerapp2')">Abrir chamados</div>
+        </div>
+
+        <!-- Power App - Agendamento de Salas -->
+        <div id="powerapp1" class="tab-content active">
+            <h2>Agendamento de Salas</h2>
+            <p>Agende e consulte a disponibilidade de salas</p>
+            
+            <div class="report-controls">
+                <button class="control-btn" onclick="resizeReport('powerapp1', 'large')">Grande</button>
+                <button class="control-btn" onclick="resizeReport('powerapp1', 'full')">Expandir</button>
+                <button class="control-btn" onclick="toggleFullscreen('powerapp-iframe1')">Tela Cheia</button>
+            </div>
+            
+            <div class="powerbi-container size-medium" id="container-powerapp1">
+                <iframe id="powerapp-iframe1" class="powerbi-iframe" 
+                    title="Agendamento de Salas"
+                    src="https://apps.powerapps.com/play/e/65c2e2a7-c883-ec90-a5d7-f7f0390f4ee3/a/047e923c-6e3a-4cd9-a9c2-7efd68f5a1ba?tenantId=f1a1c3c9-bb39-4e38-9683-1fde33697c86&hint=8073c12f-0204-4c6f-98c5-6bd75bbacf09&source=sharebutton&sourcetime=1749666118183" 
+                    frameborder="0" 
+                    allowFullScreen="true">
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Power App - Abrir Chamados -->
+        <div id="powerapp2" class="tab-content">
+            <h2>Abrir Chamados</h2>
+            <p>Sistema de abertura e acompanhamento de chamados</p>
+            
+            <div class="report-controls">
+                <button class="control-btn" onclick="resizeReport('powerapp2', 'large')">Grande</button>
+                <button class="control-btn" onclick="resizeReport('powerapp2', 'full')">Expandir</button>
+                <button class="control-btn" onclick="toggleFullscreen('powerapp-iframe2')">Tela Cheia</button>
+            </div>
+            
+            <div class="powerbi-container size-medium" id="container-powerapp2">
+                <iframe id="powerapp-iframe2" class="powerbi-iframe" 
+                    title="Abrir Chamados"
+                    src="https://apps.powerapps.com/play/e/65c2e2a7-c883-ec90-a5d7-f7f0390f4ee3/a/feffe9e4-edc9-4fab-b039-e9b5bf6c4f67?tenantId=f1a1c3c9-bb39-4e38-9683-1fde33697c86&hint=26488918-4100-46aa-9e1d-e69d4ced5168&source=sharebutton&sourcetime=1749666149174" 
+                    frameborder="0" 
+                    allowFullScreen="true">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 Indicadores Operacionais GF. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Função para alternar entre as abas
+        function openTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Certifica-se de que 'event' está disponível, embora não seja passado diretamente no HTML
+            // Para maior robustez, pode-se passar 'this' do HTML: onclick="openTab('powerapp1', this)"
+            // E então usar 'clickedTabElement.classList.add('active');'
+            // No entanto, para o cenário atual, o 'event.currentTarget' funcionará se chamado por um evento
+            // Mas é mais seguro usar querySelectorAll e procurar a aba pelo texto ou data-id
+            const clickedTab = Array.from(document.querySelectorAll('.tab')).find(tab => tab.getAttribute('onclick').includes(tabId));
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
+            document.getElementById(tabId).classList.add('active');
+        }
+        
+        // Função para redimensionar os relatórios
+        function resizeReport(containerId, size) {
+            const container = document.getElementById(containerId).querySelector('.powerbi-container');
+            container.className = 'powerbi-container size-' + size;
+        }
+        
+        // Função para tela cheia
+        function toggleFullscreen(iframeId) {
+            const iframe = document.getElementById(iframeId);
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            }
+        }
+        
+        // Função para toggle do sidebar (menu hambúrguer)
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            
+            if (sidebar.style.width === "250px") {
+                sidebar.style.width = "0";
+                overlay.style.display = "none";
+            } else {
+                sidebar.style.width = "250px";
+                overlay.style.display = "block";
+            }
+        }
+
+        // Fechar o menu quando clicar em um link (exceto os links das abas)
+        document.querySelectorAll('.sidebar a:not([onclick*="openTab"])').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+        
+        // Lógica para mostrar/ocultar a barra de navegação superior ao passar o mouse no topo
+        document.addEventListener('mousemove', function(e) {
+            const topNav = document.querySelector('.top-nav');
+            // Se o mouse estiver nos 60px superiores da janela (altura da barra top-nav + um pouco de margem)
+            if (e.clientY < 60) {
+                topNav.style.top = '0'; // Mostra a barra
+            } else {
+                // Só esconde se o mouse não estiver sobre a barra de navegação superior
+                if (!topNav.matches(':hover')) {
+                    topNav.style.top = '-90px'; // Esconde a barra
+                }
+            }
+        });
+        
+        // Garante que a barra se esconde quando o mouse sai dela
+        document.querySelector('.top-nav').addEventListener('mouseleave', function() {
+            this.style.top = '-90px';
+        });
+    </script>
+</body>
+</html>
